@@ -73,10 +73,11 @@ def print_board(board):
 
 # Handle the player's move (O) and agent's move (X)
 def handle_move(i):
-    # Player's move (O)
     if st.session_state.board[i] == ' ' and not st.session_state.game_over:
+        # Player's move (O)
         st.session_state.env.make_move(i, 'O')
         st.session_state.board = st.session_state.env.board
+        # Check for win or draw
         if st.session_state.env.winner == 'O':
             st.session_state.game_over = True
             st.session_state.message = "You win!"
@@ -90,6 +91,7 @@ def handle_move(i):
             action = st.session_state.agent.choose_action(state, actions)
             st.session_state.env.make_move(action, 'X')
             st.session_state.board = st.session_state.env.board
+            # Check for win or draw
             if st.session_state.env.winner == 'X':
                 st.session_state.game_over = True
                 st.session_state.message = "Agent wins!"
@@ -97,7 +99,7 @@ def handle_move(i):
                 st.session_state.game_over = True
                 st.session_state.message = "It's a draw!"
             
-            # Update the board after agent's move to show the current state
+            # After agent's move, force immediate state update
             st.session_state.state = st.session_state.env.get_state()
 
 # Display the board with clickable cells (without disabling buttons)
