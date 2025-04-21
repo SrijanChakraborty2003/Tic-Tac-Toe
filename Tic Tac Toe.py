@@ -96,6 +96,9 @@ def handle_move(i):
             elif len(st.session_state.env.available_moves()) == 0:
                 st.session_state.game_over = True
                 st.session_state.message = "It's a draw!"
+            
+            # Update the board after agent's move to show the current state
+            st.session_state.state = st.session_state.env.get_state()
 
 # Display the board with clickable cells
 cols = st.columns(3)
