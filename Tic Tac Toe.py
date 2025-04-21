@@ -101,9 +101,11 @@ def handle_move(i):
 cols = st.columns(3)
 for i in range(9):
     with cols[i % 3]:
-        # Use a button to make a move (this time visually update it immediately)
-        if st.button(st.session_state.board[i] if st.session_state.board[i] != ' ' else " ", key=f"btn_{i}", disabled=(st.session_state.board[i] != ' ' or st.session_state.game_over)):
-            handle_move(i)
+        # Directly display the state of the game without buttons
+        if st.session_state.board[i] == ' ':
+            st.write("")
+        else:
+            st.write(st.session_state.board[i])
 
 # Display the game message (Win/Draw)
 st.markdown(f"### {st.session_state.message}")
