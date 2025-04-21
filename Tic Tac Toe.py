@@ -97,11 +97,14 @@ def handle_move(i):
                 st.session_state.game_over = True
                 st.session_state.message = "It's a draw!"
 
-# Display the board with clickable cells
+# Display the board with clickable cells using selectbox for choosing the spot
 cols = st.columns(3)
 for i in range(9):
     with cols[i % 3]:
-        if st.button(st.session_state.board[i] if st.session_state.board[i] != ' ' else " ", key=f"btn_{i}", disabled=(st.session_state.board[i] != ' ' or st.session_state.game_over)):
+        # Use a radio button or select box to make the move
+        move_button = st.radio(f"Choose spot {i}", [' ', 'X', 'O'], key=f"radio_{i}", index=0, disabled=(st.session_state.board[i] != ' ' or st.session_state.game_over))
+        
+        if move_button == 'O' and st.session_state.board[i] == ' ':
             handle_move(i)
 
 # Display the game message (Win/Draw)
