@@ -67,43 +67,42 @@ if 'env' not in st.session_state:
     st.session_state.game_over = False
     st.session_state.message = "Your move!"
 
-# Function to print the game board
+# Function to display the game board
 def print_board(board):
-    symbols = [f":x:" if x == 'X' else ":o:" if x == 'O' else " " for x in board]
-    return [symbols[i:i + 3] for i in range(0, 9, 3)]
+    return [board[i:i + 3] for i in range(0, 9, 3)]
 
-# Display the board
-cols = st.columns(3)
-for i in range(9):
-    with cols[i % 3]:
-        # Handle the player's move
-        if st.button(st.session_state.board[i] if st.session_state.board[i] != ' ' else " ", key=f"btn_{i}", disabled=(st.session_state.board[i] != ' ' or st.session_state.game_over)):
-            # Player's move (O)
-            st.session_state.env.make_move(i, 'O')
-            st.session_state.board = st.session_state.env.board  # Immediately update the board state
-
-            # Check if the player has won
-            if st.session_state.env.winner == 'O':
+# Handle the player's move (O) and agent's move (X)
+def handle_move(i):
+    # Player's move (O)
+    if st.session_state.board[i] == ' ' and not st.session_state.game_over:
+        st.session_state.env.make_move(i, 'O')
+        st.session_state.board = st.session_state.env.board
+        if st.session_state.env.winner == 'O':
+            st.session_state.game_over = True
+            st.session_state.message = "You win!"
+        elif len(st.session_state.env.available_moves()) == 0:
+            st.session_state.game_over = True
+            st.session_state.message = "It's a draw!"
+        else:
+            # Agent's move (X)
+            state = st.session_state.env.get_state()
+            actions = st.session_state.env.available_moves()
+            action = st.session_state.agent.choose_action(state, actions)
+            st.session_state.env.make_move(action, 'X')
+            st.session_state.board = st.session_state.env.board
+            if st.session_state.env.winner == 'X':
                 st.session_state.game_over = True
-                st.session_state.message = "You win!"
+                st.session_state.message = "Agent wins!"
             elif len(st.session_state.env.available_moves()) == 0:
                 st.session_state.game_over = True
                 st.session_state.message = "It's a draw!"
-            else:
-                # Agent's move (X)
-                state = st.session_state.env.get_state()
-                actions = st.session_state.env.available_moves()
-                action = st.session_state.agent.choose_action(state, actions)
-                st.session_state.env.make_move(action, 'X')
-                st.session_state.board = st.session_state.env.board  # Immediately update the board state after agent's move
 
-                # Check if the agent has won
-                if st.session_state.env.winner == 'X':
-                    st.session_state.game_over = True
-                    st.session_state.message = "Agent wins!"
-                elif len(st.session_state.env.available_moves()) == 0:
-                    st.session_state.game_over = True
-                    st.session_state.message = "It's a draw!"
+# Display the board with clickable cells
+cols = st.columns(3)
+for i in range(9):
+    with cols[i % 3]:
+        if st.button(st.session_state.board[i] if st.session_state.board[i] != ' ' else " ", key=f"btn_{i}", disabled=(st.session_state.board[i] != ' ' or st.session_state.game_over)):
+            handle_move(i)
 
 # Display the game message (Win/Draw)
 st.markdown(f"### {st.session_state.message}")
