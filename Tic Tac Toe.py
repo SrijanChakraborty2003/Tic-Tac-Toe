@@ -81,6 +81,7 @@ for i in range(9):
             # Player's move (O)
             st.session_state.env.make_move(i, 'O')
             st.session_state.board = st.session_state.env.board  # Immediately update the board state
+
             # Check if the player has won
             if st.session_state.env.winner == 'O':
                 st.session_state.game_over = True
@@ -95,6 +96,7 @@ for i in range(9):
                 action = st.session_state.agent.choose_action(state, actions)
                 st.session_state.env.make_move(action, 'X')
                 st.session_state.board = st.session_state.env.board  # Immediately update the board state after agent's move
+
                 # Check if the agent has won
                 if st.session_state.env.winner == 'X':
                     st.session_state.game_over = True
