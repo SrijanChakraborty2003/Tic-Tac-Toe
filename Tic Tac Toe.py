@@ -43,7 +43,7 @@ class QLearningAgent:
         with open(filename, 'rb') as f:
             self.q_table = pickle.load(f)
 st.set_page_config(page_title="Tic Tac Toe: Play Against AI", layout="centered")
-st.title("🤖 Tic Tac Toe: Play Against Q-Learning Agent (Input Style- Double Tap)")
+st.title("Tic Tac Toe: Play Against Q-Learning Agent (Input Style- Double Tap)")
 if 'env' not in st.session_state:
     st.session_state.env = TicTacToe()
     st.session_state.agent = QLearningAgent()
